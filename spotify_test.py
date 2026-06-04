@@ -18,3 +18,4 @@ songs = sp.current_user_saved_tracks(limit=10)
 
 for item in songs["items"]:
     print(item["track"]["name"])
+    
