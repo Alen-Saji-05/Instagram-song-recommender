@@ -4,18 +4,27 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-
-sp = spotipy.Spotify(
-    auth_manager=SpotifyOAuth(
-        client_id=os.getenv("SPOTIFY_CLIENT_ID"),
-        client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
-        redirect_uri=os.getenv("SPOTIFY_REDIRECT_URI"),
-        scope="user-library-read"
+def get_liked_songs():
+    sp = spotipy.Spotify(
+        auth_manager=SpotifyOAuth(
+            client_id=os.getenv("SPOTIFY_CLIENT_ID"),
+            client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
+            redirect_uri=os.getenv("SPOTIFY_REDIRECT_URI"),
+            scope="user-library-read"
+        )
     )
-)
+    song=[]
+    songs = sp.current_user_saved_tracks(limit=50)
 
-songs = sp.current_user_saved_tracks(limit=10)
+    for item in songs["items"]:
+        track=item["track"]
+        song.append(
+            {
+                "id":track["id"],
+                "name":track["name"],
+                "artist":track["artists"][0]["name"]
+            }
+        )
+    return song
 
-for item in songs["items"]:
-    print(item["track"]["name"])
     
